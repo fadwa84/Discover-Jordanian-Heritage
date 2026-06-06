@@ -44,23 +44,22 @@
   <script>
     // بيانات المنتجات (منتجات فارغة)
     const products = [
-      {key:"belt", name:"Belt", blank:"products/belt-blank.jpg"},
-      {key:"cover", name:"Phone Cover", blank:"products/cover-blank.jpg"},
-      {key:"cup", name:"Cup", blank:"products/cup-blank.jpg"},
-      {key:"pillow", name:"Pillow", blank:"products/pillow-blank.jpg"}
-    ];
+  {key:"belt", name:"Belt", blank:"belt-blank.jpg"},
+  {key:"cover", name:"Phone Cover", blank:"cover-blank.jpg"},
+  {key:"cup", name:"Cup", blank:"cup-blank.jpg"},
+  {key:"pillow", name:"Pillow", blank:"pillow-blank.jpg"}
+];
     // بيانات النقوش
     const patterns = [
-      {key:"1", name:"Bedouin Rug", icon:"patterns/pattern-01.png"},
-      {key:"2", name:"Jordanian Shmagh", icon:"patterns/pattern-02.png"},
-      {key:"3", name:"Madaba Mosaic", icon:"patterns/pattern-03.png"},
-      {key:"4", name:"Straw Basket", icon:"patterns/pattern-04.png"}
-    ];
+  {key:"1", name:"Bedouin Rug", icon:"pattern-01.png"},
+  {key:"2", name:"Jordanian Shmagh", icon:"pattern-02.png"},
+  {key:"3", name:"Madaba Mosaic", icon:"pattern-03.png"},
+  {key:"4", name:"Straw Basket", icon:"pattern-04.png"}
+];
     // روابط صور المنتجات المنقوشة (نفس الأسماء الأصلية)
     function getDecoratedImg(productKey, patternKey){
       // مثال: belt1.jpg أو cup3.jpg إلخ
-      return `products/${productKey}${patternKey}.jpg`;
-    }
+return `${productKey}${patternKey}.jpg`;    }
 
     const productRow = document.getElementById("product-row");
     const mainImageArea = document.getElementById("main-image-area");
