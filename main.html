@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jordanian Heritage Product Explorer</title>
+  <meta name="viewport" content="width=480, initial-scale=1">
+  <style>
+    body {font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f6; margin: 0; color: #444;}
+    header {background: #eee; color: #444; text-align: center; padding: 36px 8px 20px 8px;}
+    header h1 {font-size: 2rem; margin-bottom: 12px;}
+    .desc {max-width: 570px; margin: 0 auto 18px auto; background: #fafafa; color: #555; padding: 16px 18px 13px 18px; border-radius: 15px; font-size: 1.13rem; box-shadow: 0 2px 9px #0001;}
+    .main {display:flex; flex-direction:column; align-items:center; margin-top:20px;}
+    .product-choose-row {display:flex; gap:32px; justify-content:center; margin:0 0 24px 0;}
+    .product-btn {border:none; background:#f6f6f6; border-radius:16px; box-shadow:0 1px 7px #0002; cursor:pointer; width:98px; height:98px; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: box-shadow 0.18s;}
+    .product-btn.selected, .product-btn:hover {box-shadow: 0 6px 20px #9992;}
+    .product-icon {width:72px; height:72px; object-fit:contain; margin-bottom:7px;}
+    .product-label {font-size:0.98rem; margin-top:0; color:#888;}
+    .main-img-area {background:#fff; border-radius:18px; box-shadow:0 1.5px 11px #0002; padding:30px 36px 16px 36px; min-height:275px; margin-bottom:30px; display:flex; flex-direction:column; align-items:center;}
+    .main-img {width:220px; height:220px; object-fit:contain; margin-bottom:12px;}
+    .patterns-row {display:flex; gap:22px; justify-content:center; margin:0;}
+    .pattern-btn {border:none; background:#f6f6f6; border-radius:12px; box-shadow:0 1px 7px #0002; cursor:pointer; width:82px; height:82px; display:flex; flex-direction:column; align-items:center; justify-content:center; transition: box-shadow 0.17s;}
+    .pattern-btn.selected, .pattern-btn:hover {box-shadow:0 6px 18px #6662;}
+    .pattern-icon {width:60px; height:60px; object-fit:cover; margin-bottom:6px;}
+    .pattern-label {font-size:0.93rem; color:#666;}
+    .back-btn {margin:24px 0 0 0; color:#777; border:none; background:transparent; font-size:1.1rem; text-decoration:underline; cursor:pointer;}
+    @media (max-width:700px){ .main-img{width:140px;height:140px;} .main-img-area{padding:18px 2vw 12px 2vw;} .product-choose-row, .patterns-row{gap:13px;} .product-btn, .pattern-btn{width:68px;height:68px;}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jordanian Heritage Product Explorer</h1>
+    <div class="desc">
+      Select a product, then choose a heritage pattern to preview the decorated result.<br>
+      Products and patterns are inspired by Jordan's cultural heritage.<br>
+      <span style="color:#bbb;">(Designed for research use)</span>
+    </div>
+  </header>
+  <div class="main">
+    <div id="product-row" class="product-choose-row"></div>
+    <div id="main-image-area" class="main-img-area" style="display:none;"></div>
+    <div id="patterns-row" class="patterns-row" style="display:none;"></div>
+    <button class="back-btn" id="reset-btn" style="display:none;" onclick="resetAll()">Back to product selection</button>
+  </div>
+  <script>
+    // بيانات المنتجات (منتجات فارغة)
+    const products = [
+      {key:"belt", name:"Belt", blank:"products/belt-blank.jpg"},
+      {key:"cover", name:"Phone Cover", blank:"products/cover-blank.jpg"},
+      {key:"cup", name:"Cup", blank:"products/cup-blank.jpg"},
+      {key:"pillow", name:"Pillow", blank:"products/pillow-blank.jpg"}
+    ];
+    // بيانات النقوش
+    const patterns = [
+      {key:"1", name:"Bedouin Rug", icon:"patterns/pattern-01.png"},
+      {key:"2", name:"Jordanian Shmagh", icon:"patterns/pattern-02.png"},
+      {key:"3", name:"Madaba Mosaic", icon:"patterns/pattern-03.png"},
+      {key:"4", name:"Straw Basket", icon:"patterns/pattern-04.png"}
+    ];
+    // روابط صور المنتجات المنقوشة (نفس الأسماء الأصلية)
+    function getDecoratedImg(productKey, patternKey){
+      // مثال: belt1.jpg أو cup3.jpg إلخ
+      return `products/${productKey}${patternKey}.jpg`;
+    }
+
+    const productRow = document.getElementById("product-row");
+    const mainImageArea = document.getElementById("main-image-area");
+    const patternsRow = document.getElementById("patterns-row");
+    const resetBtn = document.getElementById("reset-btn");
+
+    // عرض منتجات فارغة
+    function showProducts(){
+      productRow.innerHTML = "";
+      products.forEach((prod, i) => {
+        const btn = document.createElement("button");
+        btn.className = "product-btn";
+        btn.onclick = ()=>selectProduct(i);
+        btn.innerHTML = `<img src="${prod.blank}" class="product-icon"><div class="product-label">${prod.name}</div>`;
+        productRow.appendChild(btn);
+      });
+      productRow.style.display = "";
+      mainImageArea.style.display = "none";
+      patternsRow.style.display = "none";
+      resetBtn.style.display = "none";
+    }
+
+    // عند اختيار منتج
+    let selectedProduct = null;
+    function selectProduct(idx){
+      selectedProduct = products[idx];
+      // إظهار صورة المنتج الفارغ
+      mainImageArea.innerHTML = `<img src="${selectedProduct.blank}" class="main-img"><div class="product-label">${selectedProduct.name}</div>`;
+      mainImageArea.style.display = "";
+      // عرض أزرار النقوش
+      patternsRow.innerHTML = "";
+      patterns.forEach((p, j)=>{
+        const btn = document.createElement("button");
+        btn.className = "pattern-btn";
+        btn.onclick = ()=>choosePattern(j);
+        btn.innerHTML = `<img src="${p.icon}" class="pattern-icon"><div class="pattern-label">${p.name}</div>`;
+        patternsRow.appendChild(btn);
+      });
+      patternsRow.style.display = "";
+      resetBtn.style.display = "";
+      productRow.style.display = "none";
+    }
+
+    // عند اختيار نقش
+    function choosePattern(idx){
+      const pattern = patterns[idx];
+      const imgPath = getDecoratedImg(selectedProduct.key, pattern.key);
+      mainImageArea.innerHTML = `<img src="${imgPath}" class="main-img"><div class="product-label">${selectedProduct.name} - ${pattern.name}</div>`;
+    }
+
+    function resetAll(){
+      selectedProduct = null;
+      showProducts();
+    }
+    // البداية
+    showProducts();
+  </script>
+</body>
+</html>
